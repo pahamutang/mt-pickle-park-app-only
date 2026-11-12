@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "Mt Pickle Park Reservations",
+    "slug": "mt-pickle",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "pickleballapp",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "icon": "./assets/icon.png",
+    "android": {
+      "package": "com.mtpicklepark.pickleballapp",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.mtpicklepark.pickleballapp"
+    },
+    "owner": "daven2002",
+    "plugins": [
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Mt Pickle Park to access your photos so the owner can update the venue photo carousel."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "3f08f500-8483-4eec-a258-105ad3dd1d41"
+      }
+    }
+  }
+}

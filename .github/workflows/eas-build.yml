@@ -1,0 +1,62 @@
+name: EAS Build (Android)
+
+# Manual-trigger APK build via EAS. NOT wired to push events on purpose —
+# every push auto-triggering a cloud build would burn through Expo's free
+# build queue/minutes fast, and an untested commit could ship a broken
+# APK without anyone noticing. Triggering by hand keeps you in control of
+# what actually gets built and when.
+#
+# Before it ever touches EAS, this workflow installs deps and runs your
+# Jest test suite. If tests fail, the build step never runs — so a
+# broken build can't silently go out.
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "EAS build profile"
+        required: true
+        default: "preview"
+        type: choice
+        options:
+          - preview
+          - production
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test -- --ci
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          packager: npm
+
+      - name: Verify EAS auth
+        run: eas whoami
+
+      - name: Build Android APK
+        run: eas build --platform android --profile ${{ inputs.profile }} --non-interactive --wait
+
+      - name: Show build result
+        if: always()
+        run: eas build:list --platform android --limit 1 --non-interactive
